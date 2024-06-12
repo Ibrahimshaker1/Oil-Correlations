@@ -1,4 +1,5 @@
 # this module hand the correlations code each correlation is a class
+import math
 class Standing:
     def __init__(self, p: list | float, gg: float | int, oil_api: float | int, t: float | int):
         self.pressure = p
@@ -68,4 +69,34 @@ class Standing:
             return standing_bo
         else:
             return bo_standing_calculator(rs=rs, gg=self.gas_gravity, og=oil_gravity, t=self.temp)
+
+
+class Glaso:
+    def __init__(self, p: list | float, gg: float | int, oil_api: float | int, t: float | int):
+        self.pressure = p
+        self.gas_gravity = gg
+        self.oil_api = oil_api
+        self.temp = t
+
+    def solution_gas_oil_ratio(self):
+        """
+            This function return the estimated value of Rs
+        """
+        def glaso_rs_calculator(gg, oil_api, t, p):
+            x = 2.8869 - (14.1811 - 3.3093 * math.log10(p))**0.5
+            pb_s = 10**x
+            param_one = (oil_api**0.989)/((t-460)**0.172)
+            g_rs = gg*(param_one*pb_s)**1.2255
+            return g_rs
+        if isinstance(self.pressure, list):
+            glaso_rs = {
+                "P": self.pressure,
+                "Rs": []
+            }
+            for p in self.pressure:
+                glaso_rs["Rs"].append(glaso_rs_calculator(gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp, p=p))
+            return glaso_rs
+        else:
+            return glaso_rs_calculator(gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp, p=self.pressure)
+
 
