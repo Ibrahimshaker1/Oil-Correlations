@@ -219,4 +219,61 @@ class Marhoun:
             return marhoun_bo_calculator(rs=rs, gg=self.gas_gravity, og=oil_gravity, t=self.temp)
 
 
+class VasquezBeggs:
+    def __init__(self, p: list | float, p_s: float, gg: float | int, oil_api: float | int, t_s: float | int, t: float | int):
+        # in Vasquez Beggs correlations the p_s is separator pressure, and t_s is separator temperature
+        self.pressure = p
+        self.pressure_s = p_s
+        self.gas_gravity = gg
+        self.oil_api = oil_api
+        self.temp_s = t_s
+        self.temp = t
+        self.gg_s = self.gas_gravity * (1 + (5.912 * 10 ** -5) * (self.oil_api) * (self.temp_s - 460) * math.log10((self.pressure_s / 114.7)))
+
+    def solution_gas_oil_ratio(self):
+        """
+            this function return the estimated value of Rs
+        """
+        def vb_rs_calculator(oil_api, p, t):
+            if oil_api <= 30:
+                rs = 0.0362*self.gg_s*(p**1.0937)*math.exp(25.724*(oil_api/t))
+                return rs
+            elif oil_api > 30:
+                rs = 0.0178 * self.gg_s * (p ** 1.187) * math.exp(23.931 * (oil_api / t))
+                return rs
+        if isinstance(self.pressure, list):
+            vasquez_and_beggs_rs = {
+                "P": self.pressure,
+                "Rs": []
+            }
+            for p in self.pressure:
+                vasquez_and_beggs_rs["Rs"].append(vb_rs_calculator(oil_api=self.oil_api, t=self.temp, p=p))
+            return vasquez_and_beggs_rs
+        else:
+            return vb_rs_calculator(oil_api=self.oil_api, t=self.temp, p=self.pressure)
+
+    def bubble_point_pressure(self, rs):
+
+        def vb_pb_calculator(rs, oil_api, t):
+            if oil_api <= 30:
+                a = -11.172*(oil_api/t)
+                pb = (((27.624*rs)/self.gg_s)*(10**a))**0.914328
+                return pb
+            elif oil_api > 30:
+                a = -10.393 * (oil_api / t)
+                pb = (((56.18 * rs) / self.gg_s) * (10 ** a)) ** 0.84246
+                return pb
+        if isinstance(rs, list):
+            vasquez_and_beggs_pb = {
+                "Rs": rs,
+                "Pb": []
+            }
+            for r in rs:
+                vasquez_and_beggs_pb["Pb"].append(vb_pb_calculator(rs=r, oil_api=self.oil_api, t=self.temp))
+            return vasquez_and_beggs_pb
+        else:
+            return vb_pb_calculator(rs=rs, oil_api=self.oil_api, t=self.temp)
+
+
+
 
