@@ -274,6 +274,81 @@ class VasquezBeggs:
         else:
             return vb_pb_calculator(rs=rs, oil_api=self.oil_api, t=self.temp)
 
+    def oil_formation_volume_factor(self, rs):
+
+        def vb_bo_calculator(rs, t, oil_api, ):
+            if oil_api <= 30:
+                bo = 1 + (4.667*10**-4)*rs + (t-520)*(oil_api/self.gg_s)*((1.751*10**-5)+((-1.811*10**-8)*rs))
+                return bo
+            elif oil_api > 30:
+                bo = 1 + (4.670*10**-4)*rs + (t-520)*(oil_api/self.gg_s)*((1.100*10**-5)+((1.337*10**-9)*rs))
+                return bo
+        if isinstance(rs, list):
+            vasquez_and_beggs_bo = {
+                "Rs": rs,
+                "Bo": []
+            }
+            for r in rs:
+                vasquez_and_beggs_bo["Bo"].append(vb_bo_calculator(rs=r, t=self.temp, oil_api=self.oil_api))
+            return vasquez_and_beggs_bo
+        else:
+            return vb_bo_calculator(rs=rs, t=self.temp, oil_api=self.oil_api)
 
 
+class Petrosky:
+    def __init__(self, p: list | float, gg: float | int, oil_api: float | int, t: float | int):
+        self.pressure = p
+        self.gas_gravity = gg
+        self.oil_api = oil_api
+        self.temp = t
 
+    def solution_gas_oil_ratio(self):
+        def p_rs_calculator(p, gg, oil_api, t):
+            x = ((7.916*10**-4)*(oil_api)**1.541) - (4.561*10**-5)*(t-460)**1.3911
+            rs = (((p/112.727)+12.340)*((gg**0.8439)*(10**x)))**1.73184
+            return rs
+        if isinstance(self.pressure, list):
+            petrosky_rs = {
+                "P": self.pressure,
+                "Rs": []
+            }
+            for p in self.pressure:
+                petrosky_rs["Rs"].append(p_rs_calculator(p=p, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp))
+            return petrosky_rs
+        else:
+            return p_rs_calculator(p=self.pressure, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp)
+
+    def bubble_point_pressure(self,rs):
+        def p_pb_calculator(rs, gg, oil_api, t):
+            x = ((7.916*10**-4)*(oil_api)**1.541) - (4.561*10**-5)*(t-460)**1.3911
+            pb = ((112.727*rs**0.577421)/((gg**0.8439)*(10**x)))-1391.051
+            return pb
+        if isinstance(rs, list):
+            petrosky_pb = {
+                "Rs": rs,
+                "Pb": []
+            }
+            for r in rs:
+                petrosky_pb["Pb"].append(p_pb_calculator(rs=r, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp))
+            return petrosky_pb
+        else:
+            return p_pb_calculator(rs=rs, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp)
+
+    def oil_formation_volume_factor(self, rs):
+        def p_bo_calculator(rs, gg, oil_api, t):
+            oil_gravity = 141.5 / (oil_api + 131.5)
+            param_1 = (gg**0.2914)/(oil_gravity**0.6265)
+            param_2 = 0.24626*(t-460)**0.5371
+            param_3 = (((rs**0.3738)*param_1) + param_2)**3.0936
+            bo = 1.0113 + (7.2046*10**-5) * param_3
+            return bo
+        if isinstance(rs, list):
+            petrosky_bo = {
+                "Rs": rs,
+                "Bo": []
+            }
+            for r in rs:
+                petrosky_bo["Bo"].append(p_bo_calculator(rs=r, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp))
+            return petrosky_bo
+        else:
+            return p_bo_calculator(rs=rs, gg=self.gas_gravity, oil_api=self.oil_api, t=self.temp)
