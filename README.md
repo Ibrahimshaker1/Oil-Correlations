@@ -1,7 +1,6 @@
 # Oil Correlations Package
 
-## A simple package include the most famous oil correlation (Standing, Glaso, Marhoun, VasquezBeggs, Petrosky).
-## For Estimating Oil PVT Properties
+## A simple package include the most famous oil correlation (Standing, Glaso, Marhoun, VasquezBeggs, Petrosky). For Estimating Oil PVT Properties
 
 ## Importend
 
@@ -14,7 +13,7 @@ The output and Input unit
 
 ## About The Package
 
-The package had two modules:
+This package had two modules:
 
 * correlations.py
   This module include the correlation code where where every researcher is a object,
@@ -35,4 +34,19 @@ The package had two modules:
   ```
   If the pressure input was a list the method will
   return a dictionary had two key and the value is a list
+* module.py
+  This module include only one function to read a csv file for lab data that can be use for 
+  matching the file coulumns names must be (P, Rs, Bo, Co), this function will return a 
+  dictionary example, 
+  ```
+  from oil_correlations.module import read_match_data_file
+  from pprint import pprint
+  file_path = "C:/Users/Desktop/FYP-MY-DATA - Copy.csv"
+  data = read_match_data_file(file_path=file_path)
+  pprint(data)
+  ```
+  data example:
+  ![image](https://github.com/user-attachments/assets/84bed2cc-54df-478b-aee9-871085588cb5)
+
   
+
