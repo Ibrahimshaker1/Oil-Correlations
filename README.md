@@ -1,6 +1,6 @@
 # Oil Correlations Package
 
-## A simple package include the most famous oil correlation (Standing, Glaso, Marhoun, VasquezBeggs, Petrosky). For Estimating Oil PVT Properties
+## A simple package include the most famous oil correlation **(Standing, Glaso, Marhoun, VasquezBeggs, Petrosky)**. For Estimating Oil PVT Properties
 
 ## Importend
 
@@ -46,7 +46,13 @@ This package had two modules:
   pprint(data)
   ```
   data example:
+
   ![image](https://github.com/user-attachments/assets/84bed2cc-54df-478b-aee9-871085588cb5)
 
+  
+### How to use it
+clone the repo `clone https://github.com/Ibrahimshaker1/Oil-Correlations.git`
+
+Feel free to report for any error 
   
 
