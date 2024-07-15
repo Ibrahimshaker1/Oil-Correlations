@@ -2,7 +2,7 @@
 
 ## A simple package include the most famous oil correlation **(Standing, Glaso, Marhoun, VasquezBeggs, Petrosky)**. For Estimating Oil PVT Properties
 
-## Importend
+## Imported
 
 The output and Input unit
 * P: psia
